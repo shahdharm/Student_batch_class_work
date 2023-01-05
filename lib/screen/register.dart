@@ -19,8 +19,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   List<Batch> _lstBatches = [];
-  List<Course> _lstCourses = [];
-  final List<Student> _lststudents = [];
+  List<Course> _lstCoursesSlected = [];
+  List<Student> _lststudents = [];
   String _dropDownValue = "";
 
   final _key = GlobalKey<FormState>();
@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   getcourse() async {
-    _lstCourses = await CourseDatasource().getAllCourse();
+    _lstCoursesSlected = await CourseDatasource().getAllCourse();
   }
 
   _saveStudent() async {
@@ -55,13 +55,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final batch = _lstBatches
         .firstWhere((element) => element.batchName == _dropDownValue);
 
-    for (Course c in _lstCourses) {
+    for (Course c in _lstCoursesSlected) {
       students.course.add(c);
     }
 
     students.batch.target = batch;
 
     int status = await StudentRepositoryImpl().addStudent(students);
+    _showStudentCourse();
     _showmessage(status);
   }
 
@@ -74,6 +75,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       MotionToast.error(
         description: const Text("Error Adding Student"),
       ).show(context);
+    }
+  }
+
+  _showStudentCourse()async{
+    List<Student> _lststudents = await StudentRepositoryImpl().getStudent();
+    for (Student s in _lststudents){
+      debugPrint(s.fname);
+      for(Course c in s.course){
+        debugPrint(c.courseName);
+      }
     }
   }
 
@@ -185,7 +196,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           buttonText: const Text("select course"),
                           buttonIcon: const Icon(Icons.search),
                           onConfirm: (value) {
-                            _lstCourses = value;
+                            _lstCoursesSlected = value;
                           },
                         );
                       } else {

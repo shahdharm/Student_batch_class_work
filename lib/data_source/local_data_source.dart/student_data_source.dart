@@ -26,12 +26,11 @@ class StudentDataSource {
     }
   }
 
-    Future<bool> loginStudent(String username, String password) {
+    Future<Student> loginStudent(String username, String password) {
     try {
-      return Future.value(objectBoxInstance.loginUser(username, password));
+      return Future.value(objectBoxInstance.loginstudent(username, password));
     } catch (e) {
-      print('Error logging in: $e');
-      return Future.value(false);
+      return Future.value(null);
     }
   }
 }

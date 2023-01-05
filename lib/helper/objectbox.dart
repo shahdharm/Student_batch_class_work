@@ -53,10 +53,10 @@ class ObjectBoxInstance {
   void insertCourses() {
     List<Course> lstCourse = getAllCourse();
     if (lstCourse.isEmpty) {
-      addCourse(Course('A'));
-      addCourse(Course('Ba'));
-      addCourse(Course('Aa'));
-      addCourse(Course('Bd'));
+      addCourse(Course('Flutter'));
+      addCourse(Course('Web Api'));
+      addCourse(Course('Java'));
+      addCourse(Course('Dart'));
     }
   }
   //---------------Student Quries--------------
@@ -81,21 +81,13 @@ class ObjectBoxInstance {
     }
   }
 
-  Future<bool> loginUser(String username, String password) async {
-    var userData = _student
-        .query(Student_.username.equals(username) &
-            Student_.password.equals(password))
+
+
+  Student? loginstudent(String username, String password) {
+    return _student
+        .query(
+            Student_.username.equals(username) & Student_.password.equals(password))
         .build()
         .findFirst();
-    print("Data from Objectbox: $userData");
-    print("Username from Objectbox: $username");
-
-    return userData != null ? true : false;
   }
 }
-
-
-
-//initialization of objectBox
-
-// login query

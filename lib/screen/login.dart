@@ -23,31 +23,37 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
-
-  _getStudent() async {
-      String username = _usernameController.text;
-      String password = _usernameController.text;
-
-      // print(username);
-      // print(password);
-
-      bool isLogin = await StudentRepositoryImpl().loginstudent(username, password);
-      print(isLogin);
-      var data = await StudentRepositoryImpl().getStudent();
-      _showMessage(isLogin);
+  _loginUser() async {
+    try {
+      Student? status = await StudentRepositoryImpl()
+          .loginstudent(_usernameController.text, _passwordController.text);
+      if (status != null) {
+        MotionToast.success(
+            description: const Text("Success"),
+            onClose: () {
+              Navigator.of(context).pushNamed('/dashboardScreen');
+            }).show(context);
+      } else {
+        throw Exception('Error logging in');
+      }
+    } catch (e) {
+      MotionToast.error(
+        description: const Text("Username or Password Invalid"),
+      ).show(context);
     }
+  }
 
-    _showMessage(bool CheckLogin) {
-      CheckLogin == true
-          ? MotionToast.success(
-              description: const Text("Succes"),
-              onClose: () {
-                Navigator.of(context).pushNamed('/dashboardScreen');
-              }).show(context)
-          : MotionToast.error(
-              description: const Text("failed to login"),
-            ).show(context);
-    }
+  _showMessage(bool CheckLogin) {
+    CheckLogin == true
+        ? MotionToast.success(
+            description: const Text("Succes"),
+            onClose: () {
+              Navigator.of(context).pushNamed('/dashboardScreen');
+            }).show(context)
+        : MotionToast.error(
+            description: const Text("failed to login"),
+          ).show(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         print("running");
                         if (_formKey.currentState!.validate()) {
-                          _getStudent();
+                          _loginUser();
                           // print("run");
 
                           //     .then((value) => getStudent);
