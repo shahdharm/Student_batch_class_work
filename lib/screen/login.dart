@@ -1,5 +1,8 @@
+import 'package:batch_student_starter/model/student.dart';
+import 'package:batch_student_starter/repository/student_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,9 +13,41 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  final List<Student> _lststudents = [];
 
-  final _usernameController = TextEditingController(text: 'kiran');
-  final _passwordController = TextEditingController(text: 'kiran123');
+  final _usernameController = TextEditingController(text: 'NirajanG');
+  final _passwordController = TextEditingController(text: 'Nirajan123');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+  _getStudent() async {
+      String username = _usernameController.text;
+      String password = _usernameController.text;
+
+      // print(username);
+      // print(password);
+
+      bool isLogin = await StudentRepositoryImpl().loginstudent(username, password);
+      print(isLogin);
+      var data = await StudentRepositoryImpl().getStudent();
+      _showMessage(isLogin);
+    }
+
+    _showMessage(bool CheckLogin) {
+      CheckLogin == true
+          ? MotionToast.success(
+              description: const Text("Succes"),
+              onClose: () {
+                Navigator.of(context).pushNamed('/dashboardScreen');
+              }).show(context)
+          : MotionToast.error(
+              description: const Text("failed to login"),
+            ).show(context);
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +104,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 8),
                     ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                        print("running");
+                        if (_formKey.currentState!.validate()) {
+                          _getStudent();
+                          // print("run");
+
+                          //     .then((value) => getStudent);
+                          // Navigator.of(context).pushNamed('/dashboardScreen');
+
+                        }
                       },
                       child: const SizedBox(
                         height: 40,
